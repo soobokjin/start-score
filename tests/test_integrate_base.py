@@ -236,7 +236,7 @@ class TestIntegrateBase(TestCase):
         self.assertEqual(int(True), tx_results[0].status)
 
         self._write_precommit_state(prev_block)
-        return tx_results
+        return tx_results[0]
 
     def send_message(self,
                      addr_from: Optional['Address'],
@@ -249,7 +249,7 @@ class TestIntegrateBase(TestCase):
         self.assertEqual(int(True), tx_results[0].status)
 
         self._write_precommit_state(prev_block)
-        return tx_results
+        return tx_results[0]
 
     def _make_score_message_tx(self,
                                addr_from: Optional['Address'],
