@@ -238,6 +238,51 @@ class TestIntegrateBase(TestCase):
         self._write_precommit_state(prev_block)
         return tx_results
 
+    def send_message(self,
+                     addr_from: Optional['Address'],
+                     addr_to: 'Address',
+                     data: str,
+                     value: int = 0
+                     ):
+        tx = self._make_score_message_tx(addr_from, addr_to, data, value)
+        prev_block, tx_results = self._make_and_req_block([tx])
+        self.assertEqual(int(True), tx_results[0].status)
+
+        self._write_precommit_state(prev_block)
+        return tx_results
+
+    def _make_score_message_tx(self,
+                               addr_from: Optional['Address'],
+                               addr_to: 'Address',
+                               data: str,
+                               value: int = 0):
+        timestamp_us = create_timestamp()
+        nonce = 0
+
+        request_params = {
+            "version": self._version,
+            "from": addr_from,
+            "to": addr_to,
+            "value": value,
+            "stepLimit": self._step_limit,
+            "timestamp": timestamp_us,
+            "nonce": nonce,
+            "signature": self._signature,
+            "dataType": "message",
+            "data": data
+        }
+
+        method = 'icx_sendTransaction'
+        # Insert txHash into request params
+        request_params['txHash'] = create_tx_hash()
+        tx = {
+            'method': method,
+            'params': request_params
+        }
+
+        self.icon_service_engine.validate_transaction(tx)
+        return tx
+
     def _make_score_call_tx(self,
                             addr_from: Optional['Address'],
                             addr_to: 'Address',

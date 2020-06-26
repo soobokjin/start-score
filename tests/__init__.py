@@ -37,14 +37,14 @@ def create_timestamp():
     return int(time() * 10 ** 6)
 
 
-def create_address(prefix: int = 0, data: bytes=None) -> 'Address':
+def create_address(prefix: int = 0, data: bytes = None) -> 'Address':
     if data is None:
         data = create_tx_hash()
     hash_value = hashlib.sha3_256(data).digest()
     return Address(AddressPrefix(prefix), hash_value[-20:])
 
 
-def create_hash_256(data: bytes=None) -> bytes:
+def create_hash_256(data: bytes = None) -> bytes:
     if data is None:
         max_int = sys.maxsize
         length = (max_int.bit_length() + 7) // 8
@@ -53,19 +53,34 @@ def create_hash_256(data: bytes=None) -> bytes:
     return hashlib.sha3_256(data).digest()
 
 
-def create_tx_hash(data: bytes=None) -> bytes:
+def create_tx_hash(data: bytes = None) -> bytes:
     return create_hash_256(data)
 
 
-def create_block_hash(data: bytes=None) -> bytes:
+def create_block_hash(data: bytes = None) -> bytes:
     return create_tx_hash(data)
 
 
-def raise_exception_start_tag(tag: str=""):
+def raise_exception_start_tag(tag: str = ""):
     emblem_str = '=' * 20
     Logger.error(f'{emblem_str} [{tag}] raise exception start {emblem_str}')
 
 
-def raise_exception_end_tag(tag: str=""):
+def raise_exception_end_tag(tag: str = ""):
     emblem_str = '=' * 20
     Logger.error(f'{emblem_str} [{tag}] raise exception end {emblem_str}')
+
+
+def string_to_hex_string(string: str):
+    if not isinstance(string, str):
+        raise ValueError(f"Invalid type. Only str type can be converted: {type(string)}")
+
+    b_str = string.encode('utf-8')
+    return "0x" + b_str.hex()
+
+
+def hex_string_to_string(hex_string: str):
+    if not hex_string.startswith("0x"):
+        raise ValueError(f"String should be hex {hex_string}")
+
+    return bytes.fromhex(hex_string[2:]).decode('utf-8')

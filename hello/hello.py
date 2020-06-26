@@ -16,7 +16,11 @@ class Hello(IconScoreBase):
 
     def on_update(self) -> None:
         super().on_update()
-    
+
+    @eventlog()
+    def SetVar(self, value: str):
+        pass
+
     @external(readonly=True)
     def hello(self) -> str:
         Logger.debug(f'Hello, world!', TAG)
@@ -37,6 +41,7 @@ class Hello(IconScoreBase):
     @external
     def setVar(self, data: str):
         self._var_db.set(data)
+        self.SetVar(data)
 
     @external(readonly=True)
     def getDict(self, key: str) -> str:
